@@ -16,7 +16,17 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         // Use this method to optionally configure and attach the UIWindow `window` to the provided UIWindowScene `scene`.
         // If using a storyboard, the `window` property will automatically be initialized and attached to the scene.
         // This delegate does not imply the connecting scene or session are new (see `application:configurationForConnectingSceneSession` instead).
-        guard let _ = (scene as? UIWindowScene) else { return }
+        guard let scene = (scene as? UIWindowScene) else { return }
+        
+        window = UIWindow(windowScene: scene)
+        
+        if TokenManager.shared.issetToken() {
+            window?.rootViewController = UINavigationController(rootViewController: PaymentsController())
+        } else {
+            window?.rootViewController = UINavigationController(rootViewController: LoginController())
+        }
+        
+        window?.makeKeyAndVisible()
     }
 
     func sceneDidDisconnect(_ scene: UIScene) {
@@ -48,5 +58,19 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     }
 
 
+    func changeRootViewController(_ vc: UIViewController, animated: Bool = true) {
+        guard let window = self.window else { return }
+
+        window.rootViewController = vc
+
+        // add animation
+        UIView.transition(with: window,
+                          duration: 0.5,
+                          options: [.transitionCrossDissolve],
+                          animations: nil,
+                          completion: nil)
+
+    }
+    
 }
 
